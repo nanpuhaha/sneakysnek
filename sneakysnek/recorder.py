@@ -28,9 +28,7 @@ class Recorder:
     @classmethod
     def record(cls, callback):
         recorder = cls(callback)
-        recorder_os =recorder.backend.__class__.record(callback)
-
-        return recorder_os
+        return recorder.backend.__class__.record(callback)
 
 
 recorder = None
@@ -46,10 +44,13 @@ def demo():
     def handler(event):
         print(event)
 
-        if isinstance(event, sneakysnek.keyboard_event.KeyboardEvent):
-            if event.keyboard_key == sneakysnek.keyboard_keys.KeyboardKey.KEY_ESCAPE:
-                global recorder
-                recorder.stop()
+        if (
+            isinstance(event, sneakysnek.keyboard_event.KeyboardEvent)
+            and event.keyboard_key
+            == sneakysnek.keyboard_keys.KeyboardKey.KEY_ESCAPE
+        ):
+            global recorder
+            recorder.stop()
 
     global recorder
     recorder = Recorder.record(handler)

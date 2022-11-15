@@ -22,12 +22,12 @@ class LinuxRecorder(Recorder):
 
         self.is_recording = False
         self.thread = None
-    
+
         self.display_local = Xlib.display.Display()
-        
+
         self.display_record_keyboard = Xlib.display.Display()
         self.display_record_mouse = Xlib.display.Display()
-        
+
         self.keyboard_context = None
         self.mouse_context = None
 
@@ -78,7 +78,7 @@ class LinuxRecorder(Recorder):
 
     def event_handler(self, display, reply):
         data = reply.data
-        
+
         while len(data):
             event, data = Xlib.protocol.rq.EventField(None).parse_binary_value(
                 data, 
@@ -118,7 +118,7 @@ class LinuxRecorder(Recorder):
 
                     x = event.root_x
                     y = event.root_y
-                    
+
                     self.callback(MouseEvent(MouseEvents.SCROLL, direction=direction, velocity=1, x=x, y=y))
             elif event.type == Xlib.X.MotionNotify:
                 self.callback(MouseEvent(MouseEvents.MOVE, x=event.root_x, y=event.root_y))
@@ -183,9 +183,7 @@ class LinuxRecorder(Recorder):
         return 0
 
     def _keycode_to_scan_code(self, display, keycode, index):
-        scan_code = display.keycode_to_keysym(keycode, index)
-
-        if scan_code:
+        if scan_code := display.keycode_to_keysym(keycode, index):
             return scan_code
         elif index & 0x2:
             return self._keycode_to_scan_code(display, keycode, index & ~0x2)
